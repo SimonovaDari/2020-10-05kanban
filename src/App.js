@@ -8,13 +8,13 @@ function getId() {
 }
 
 const taskArray = [
-    {id: getId(), name: 'First Task', status: 'todo'},
-    {id: getId(), name: 'Second Task', status: 'progress'},
-    {id: getId(), name: 'Third Task', status: 'review'},
-    {id: getId(), name: 'Fourth Task', status: 'done'},
-    {id: getId(), name: 'Fifth Task', status: 'progress'},
-    {id: getId(), name: 'Sixth Task', status: 'done'},
-    {id: getId(), name: 'Seventh Task', status: 'review'},
+    {id: getId(), name: 'First Task', priority: 1, status: 'todo'},
+    {id: getId(), name: 'Second Task', priority: 2, status: 'progress'},
+    {id: getId(), name: 'Third Task', priority: 3, status: 'review'},
+    {id: getId(), name: 'Fourth Task', priority: 4, status: 'done'},
+    {id: getId(), name: 'Fifth Task', priority: 1, status: 'progress'},
+    {id: getId(), name: 'Sixth Task', priority: 2, status: 'done'},
+    {id: getId(), name: 'Seventh Task', priority: 3, status: 'review'},
 ];
 const columnArray = [
     {id: getId(), title: 'To Do', status: 'todo'},
@@ -24,6 +24,7 @@ const columnArray = [
 ];
 
 const statuses = ['todo', 'progress', 'review', 'done'];
+const priorities = [0, 1, 2, 3, 4, 5, 6];
 
 function App() {
     const [tasks, setTasks] = useState(taskArray)
@@ -43,10 +44,32 @@ function App() {
             if (el.id === taskId) {
                 if (direction === 'right') el.status = statuses[statuses.indexOf(el.status) + 1]
                 if (direction === 'left') el.status = statuses[statuses.indexOf(el.status) - 1]
+                if (direction === 'up') el.priority = priorities[priorities.indexOf(el.priority) + 1];
+                if (direction === 'down') el.priority = priorities[priorities.indexOf(el.priority) - 1];
             }
             return el
         })
         setTasks(newTasks);
+    }
+
+    const priorityChange = (id, val) => {
+        const newTasks = tasks.map(el => {
+            if (el.id === id) {
+               el.priority = priorities[priorities.indexOf(el.priority) + val];
+            }
+            return el
+        })
+        setTasks(newTasks);
+    }
+
+    const editTask = (id, updatedTask) => {
+        const newTasks = tasks.map(el => {
+            if (el.id === id) {
+            return {...el, ...updatedTask}
+            }
+            return el
+        })
+       setTasks(newTasks);
     }
 
     return (
@@ -57,6 +80,9 @@ function App() {
                                                tasks={tasks}
                                                changeTaskStatus={changeTaskStatus}
                                                delete={deleteTask}
+                                               priorityChange={priorityChange}
+                                               priorities={priorities}
+                                               editTask={editTask}
                 />)}
             </div>
         </div>
